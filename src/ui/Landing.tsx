@@ -13,6 +13,15 @@ const LANGS: Array<{ id: Lang; label: string; name: string }> = [
   { id: 'en', label: 'EN', name: 'English' },
 ];
 
+/** Third-party models, CC BY 4.0: the license asks for the author and the source wherever the game is published. */
+const CREDITS: Array<{ model: string; author: string; url: string }> = [
+  { model: 'Prototype Pistol', author: 'vaportrash', url: 'https://sketchfab.com/3d-models/863482cf4d384e49a403b2963c7e7f8f' },
+  { model: 'Three-Head Baby Mutant', author: 'LxNazarov', url: 'https://sketchfab.com/3d-models/a769a92a263d47488b8fb2136c2759fb' },
+  { model: 'Flyning monster', author: 'Vladies', url: 'https://sketchfab.com/3d-models/8bccab10deb54ea090d99a6255a20195' },
+  { model: 'Hoefnagel creature', author: 'silicat', url: 'https://sketchfab.com/3d-models/9a92596a121f412299dfbc61b1bb01aa' },
+  { model: 'Realistic Skull with animation', author: 'theauditor', url: 'https://sketchfab.com/3d-models/f18b6609047d4183a4d7c72abca9e553' },
+];
+
 /** Title screen over the live 3D backdrop: the name, the rules as a field protocol, the way in, and the language. */
 export function Landing({ onEnter, error }: LandingProps) {
   const s = useStrings();
@@ -57,6 +66,22 @@ export function Landing({ onEnter, error }: LandingProps) {
         </button>
         {error && <p className="title__error">{error}</p>}
         <p className="title__controls">{s.controls}</p>
+        <details className="title__credits">
+          <summary>{s.credits} · CC BY 4.0</summary>
+          <ul>
+            {CREDITS.map((c) => (
+              <li key={c.url}>
+                <a href={c.url} target="_blank" rel="noreferrer">
+                  {c.model}
+                </a>{' '}
+                — {c.author}
+              </li>
+            ))}
+          </ul>
+          <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noreferrer">
+            creativecommons.org/licenses/by/4.0
+          </a>
+        </details>
       </div>
     </main>
   );

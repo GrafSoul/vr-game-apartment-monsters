@@ -254,6 +254,33 @@ canvas {
   animation: rise 0.6s 2.15s both;
 }
 
+.title__credits {
+  max-width: 52ch;
+  font: 400 0.75rem/1.5 var(--mono);
+  color: var(--muted);
+  animation: rise 0.6s 2.3s both;
+}
+
+.title__credits summary {
+  cursor: pointer;
+  width: fit-content;
+}
+
+.title__credits ul {
+  margin: 0.4rem 0;
+  padding-left: 1.1rem;
+}
+
+.title__credits a {
+  color: inherit;
+  text-underline-offset: 2px;
+}
+
+.title__credits a:hover,
+.title__credits summary:hover {
+  color: var(--fg);
+}
+
 .title__error {
   margin: 0;
   font: 500 0.9rem/1.4 var(--mono);

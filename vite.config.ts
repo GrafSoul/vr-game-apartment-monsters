@@ -8,6 +8,9 @@ import { defineConfig } from 'vite';
 export default defineConfig(({ mode }) => {
   const local = mode === 'mac';
   return {
+    // GitHub Pages serves the build from `docs/` under /<repo>/ (or a custom domain at /): relative URLs work in both.
+    base: './',
+    build: { outDir: 'docs' },
     plugins: local ? [react()] : [react(), basicSsl()],
     server: local ? { host: 'localhost', port: 5174 } : { host: true, port: 5173 },
     preview: { host: true, port: 4173 },

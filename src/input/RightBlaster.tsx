@@ -9,7 +9,7 @@ import { raycastTargets } from '../state/targets';
 import { pulse } from './haptics';
 import { aimAtPanel, wristUi } from './wristUi';
 
-const URL = '/models/pistol.glb';
+const URL = `${import.meta.env.BASE_URL}models/pistol.glb`;
 /** Model space: barrel along +Z, grip down at the back. Muzzle tip measured from the exported GLB. */
 const MUZZLE = new Vector3(0, 0.045, 0.16);
 const GRIP_CENTRE = new Vector3(0, -0.04, -0.1);

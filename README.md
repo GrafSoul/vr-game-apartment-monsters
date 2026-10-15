@@ -54,6 +54,20 @@ Open `http://localhost:5174`. The Quest 3 emulator (IWER) supplies a synthetic l
 
 To look at a single creature on a turntable, open `http://localhost:5174/?preview=orb` (or `wingskull`, `fireskull`).
 
+## Publishing (GitHub Pages)
+
+The site is served by GitHub Pages from the `docs/` folder of `main`. To publish a new version:
+
+1. Build into `docs/`:
+
+   ```bash
+   npm run build
+   ```
+
+2. Commit `docs/` together with the source and push to `main`.
+
+The build uses relative URLs (`base: './'`), so it works both under `/<repo>/` and on a custom domain.
+
 ## Models
 
 - The game loads compressed models from `public/models/*.glb`.

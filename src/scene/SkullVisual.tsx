@@ -5,7 +5,7 @@ import { AdditiveBlending, DoubleSide, Group, Mesh, ShaderMaterial } from 'three
 import { clone as cloneSkinned } from 'three/examples/jsm/utils/SkeletonUtils.js';
 import { makeDissolvable, type DissolveUniforms } from '../fx/dissolve';
 
-const URL = '/models/skull.glb';
+const URL = `${import.meta.env.BASE_URL}models/skull.glb`;
 const JAW_CLIP = 'Open Close Jaw';
 const SKULL_TILT = -Math.PI / 2;
 const SKULL_OFFSET: [number, number, number] = [0.082, -0.015, -0.045];

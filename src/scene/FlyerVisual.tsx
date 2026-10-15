@@ -7,8 +7,8 @@ import { dissolveUniforms, makeDissolvable, type DissolveUniforms } from '../fx/
 import type { Species } from '../game/game';
 import { SkullVisual } from './SkullVisual';
 
-const ORB_URL = '/models/orb.glb';
-const WING_URL = '/models/wingskull.glb';
+const ORB_URL = `${import.meta.env.BASE_URL}models/orb.glb`;
+const WING_URL = `${import.meta.env.BASE_URL}models/wingskull.glb`;
 const AXES = ['x', 'y', 'z'] as const;
 /** Wing beats per second × 2π. The body bob is locked to it so the downstroke lifts the skull. */
 const FLAP_RATE = 7.5;

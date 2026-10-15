@@ -11,7 +11,7 @@ import { damageCreature, game, hurtPlayer, removeCreature, type Creature } from 
 import { pulseBoth } from '../input/haptics';
 import { registerTarget } from '../state/targets';
 
-const URL = '/models/mutant.glb';
+const URL = `${import.meta.env.BASE_URL}models/mutant.glb`;
 const CLIPS = {
   idle: 'Armature|Armature|Armature|Armature|IdleComplete',
   jump: 'Jump',
