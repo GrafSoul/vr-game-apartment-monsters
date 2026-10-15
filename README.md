@@ -1,4 +1,5 @@
-# Apartment Monsters — a mixed-reality shooter for Quest 3
+# Apartment Monsters 
+## A mixed-reality shooter for Quest 3
 
 Monsters break through the walls of your real room. Runs in the Meta Quest 3 browser via WebXR (React Three Fiber + `@react-three/xr`). The game speaks English and Russian; switch on the title screen.
 
