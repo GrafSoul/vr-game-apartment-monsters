@@ -1,0 +1,13 @@
+node_modules
+dist
+*.local
+.DS_Store
+
+# Blender scene and full-size exports: too heavy for git, the game ships only public/models
+assets/
+
+# Preview images of other people's models (moodboard research), not ours to publish
+docs/moodboard/thumbs/
+
+# Local tool caches
+.claude/sdd-cache/

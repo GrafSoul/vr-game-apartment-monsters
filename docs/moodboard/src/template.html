@@ -1,0 +1,327 @@
+<title>Мудборд «Охотник»</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Exo+2:wght@500;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one 1120px column; live scene as the hero, then styles, catalog by role, wrist panel, rules.
+   Deliberately single dark theme: a night hunt where glow carries the meaning. */
+:root {
+  color-scheme: dark;
+  --bg: #0c1013;
+  --surface: #141a1f;
+  --raise: #1b232a;
+  --line: #28323b;
+  --fg: #e7ebee;
+  --muted: #95a1ab;
+  --amber: #ffb547;   /* hunter tech: blaster, player UI */
+  --violet: #a78bff;  /* the shadows */
+  --hostile: #ff6a45; /* enemy drones */
+  --ok: #62d49c;
+  --warn: #ffd166;
+  --info: #74bdff;
+  --display: "Exo 2", "Arial Narrow", system-ui, sans-serif;
+  --body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font: 16px/1.6 var(--body); }
+.wrap { max-width: 1120px; margin: 0 auto; padding-inline: clamp(16px, 4vw, 32px); padding-block: 40px 80px; }
+a { color: var(--amber); text-underline-offset: 3px; }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; }
+h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(2rem, 5vw, 3.4rem); font-weight: 800; line-height: 1.05; letter-spacing: -0.01em; }
+h2 { font-size: clamp(1.5rem, 3vw, 2.1rem); font-weight: 700; line-height: 1.15; }
+h3 { font-size: 1.2rem; font-weight: 700; }
+p { margin: 0; max-width: 68ch; }
+.eyebrow { font: 500 0.75rem/1 var(--mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+.lede { color: var(--muted); font-size: 1.08rem; }
+section { display: grid; gap: 20px; padding-top: 72px; }
+.head { display: grid; gap: 14px; }
+
+/* ---------- hero scene ---------- */
+.hero { display: grid; gap: 18px; }
+#stage { position: relative; width: 100%; aspect-ratio: 16 / 9; max-width: 100%; border-radius: 14px; overflow: hidden; background: #1d1a17; border: 1px solid var(--line); touch-action: none; cursor: crosshair; }
+#scene { display: block; width: 100%; height: 100%; }
+@media (max-width: 600px) { #stage { aspect-ratio: 4 / 3; } }
+#stage::after { content: ""; position: absolute; inset: 0; pointer-events: none; mix-blend-mode: overlay; opacity: .22;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); }
+.hud { position: absolute; inset: 12px 12px auto 12px; display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; pointer-events: none; z-index: 2; }
+.toggles { display: flex; flex-wrap: wrap; gap: 6px; pointer-events: auto; }
+.toggles button { font: 500 0.78rem/1 var(--mono); color: var(--fg); background: rgba(12,16,19,.72); border: 1px solid rgba(255,255,255,.18); border-radius: 999px; padding: 8px 12px; cursor: pointer; backdrop-filter: blur(6px); }
+.toggles button[aria-pressed="true"] { border-color: var(--amber); color: var(--amber); }
+.toggles button[aria-pressed="false"] { opacity: .75; text-decoration: line-through; }
+.score { font: 500 0.8rem/1 var(--mono); background: rgba(12,16,19,.72); border: 1px solid rgba(255,255,255,.18); border-radius: 8px; padding: 8px 12px; white-space: nowrap; }
+.score b { color: var(--amber); font-variant-numeric: tabular-nums; }
+.tag-pt { position: absolute; left: 12px; bottom: 12px; font: 500 0.7rem/1 var(--mono); color: rgba(255,255,255,.7); background: rgba(12,16,19,.6); padding: 6px 9px; border-radius: 6px; pointer-events: none; z-index: 2; }
+#stage.nogl::before { content: "WebGL недоступен в этом окне, живая сцена не запустилась."; position: absolute; inset: 0; display: grid; place-items: center; padding: 24px; text-align: center; color: var(--muted); z-index: 3; }
+.factors { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+.factor { display: grid; gap: 6px; padding: 14px 16px; border-left: 2px solid var(--line); }
+.factor h3 { font-size: 1rem; }
+.factor p { color: var(--muted); font-size: 0.93rem; }
+.factor.code { border-left-color: var(--amber); }
+
+/* ---------- styles ---------- */
+.styles { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+.style { display: grid; grid-template-rows: auto auto auto 1fr; gap: 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px; min-width: 0; }
+.style.pick { border-color: var(--amber); box-shadow: 0 0 0 1px var(--amber) inset; }
+.collage { display: grid; grid-template-columns: 2fr 1fr; grid-template-rows: 1fr 1fr; gap: 4px; aspect-ratio: 16 / 9; max-width: 100%; border-radius: 10px; overflow: hidden; }
+.collage img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.collage img:first-child { grid-row: span 2; }
+.style-title { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.badge { font: 500 0.7rem/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--bg); background: var(--amber); padding: 5px 8px; border-radius: 5px; }
+.pc { display: grid; gap: 8px; font-size: 0.93rem; }
+.pc ul { margin: 0; padding-left: 18px; display: grid; gap: 4px; }
+.pc .k { font: 500 0.72rem/1 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.style p.sum { color: var(--muted); font-size: 0.95rem; }
+
+/* ---------- catalog ---------- */
+.group { display: grid; gap: 14px; padding-top: 28px; }
+.group-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; border-bottom: 1px solid var(--line); padding-bottom: 10px; }
+.group-head p { color: var(--muted); font-size: 0.92rem; }
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 14px; }
+.card { display: grid; grid-template-rows: auto 1fr; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; min-width: 0; }
+.card.fav { border-color: var(--amber); }
+.thumb { position: relative; aspect-ratio: 16 / 9; max-width: 100%; background: var(--raise); }
+.thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.thumb .st { position: absolute; left: 8px; top: 8px; font: 500 0.68rem/1 var(--mono); background: rgba(12,16,19,.8); color: var(--fg); padding: 5px 7px; border-radius: 5px; }
+.card-body { display: grid; grid-template-rows: auto auto auto 1fr auto; gap: 10px; padding: 14px; }
+.card h4 { margin: 0; font: 600 1rem/1.3 var(--body); }
+.by { color: var(--muted); font-size: 0.82rem; }
+.chips { display: flex; flex-wrap: wrap; gap: 5px; }
+.chip { font: 500 0.7rem/1 var(--mono); padding: 5px 7px; border-radius: 5px; background: var(--raise); color: var(--muted); font-variant-numeric: tabular-nums; }
+.chip.cc0 { color: var(--ok); }
+.chip.ccby { color: var(--info); }
+.chip.light { color: var(--ok); }
+.chip.mid { color: var(--fg); }
+.chip.heavy { color: var(--warn); }
+.note { font-size: 0.88rem; color: var(--fg); opacity: .88; }
+.card-foot { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding-top: 4px; }
+.card-foot a { font-size: 0.85rem; }
+.fav-btn { font: 500 0.75rem/1 var(--mono); color: var(--muted); background: transparent; border: 1px solid var(--line); border-radius: 999px; padding: 7px 10px; cursor: pointer; }
+.fav-btn[aria-pressed="true"] { color: var(--bg); background: var(--amber); border-color: var(--amber); }
+.picked { position: sticky; bottom: 0; z-index: 5; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-top: 28px; padding: 12px 16px; padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px)); background: rgba(20,26,31,.94); border: 1px solid var(--line); border-radius: 12px; backdrop-filter: blur(8px); }
+.picked p { font-size: 0.9rem; color: var(--muted); }
+.picked b { color: var(--fg); font-variant-numeric: tabular-nums; }
+.primary { font: 600 0.9rem/1 var(--body); color: var(--bg); background: var(--amber); border: 0; border-radius: 8px; padding: 11px 16px; cursor: pointer; }
+.primary:disabled { opacity: .45; cursor: default; }
+#copyOut { width: 100%; min-height: 110px; font: 0.8rem/1.5 var(--mono); color: var(--fg); background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 10px; }
+
+/* ---------- wrist ---------- */
+.wrist { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 28px; align-items: center; }
+@media (max-width: 820px) { .wrist { grid-template-columns: 1fr; } }
+.wrist-view { position: relative; background: radial-gradient(120% 90% at 50% 100%, #2a2520 0%, #15130f 70%); border: 1px solid var(--line); border-radius: 14px; padding: 22px 18px 18px; min-height: 470px; display: grid; place-items: end center; overflow: hidden; }
+.ctrl { width: 150px; max-width: 40%; }
+.panel { position: absolute; left: 50%; top: 22px; transform: translateX(-50%) perspective(700px) rotateX(10deg); width: min(330px, 88%); background: rgba(14,20,24,.82); border: 1px solid rgba(255,181,71,.55); border-radius: 12px; padding: 14px; display: grid; gap: 12px; box-shadow: 0 0 30px rgba(255,181,71,.18), inset 0 0 20px rgba(255,181,71,.06); transition: opacity .18s ease, transform .18s ease; font-family: var(--mono); }
+.panel .row { display: flex; justify-content: space-between; align-items: center; gap: 10px; font-size: 0.75rem; color: var(--muted); }
+.panel .row b { color: var(--fg); font-weight: 500; font-variant-numeric: tabular-nums; }
+.hp { display: flex; gap: 4px; }
+.hp i { width: 22px; height: 8px; border-radius: 2px; background: var(--amber); display: block; }
+.hp i.off { background: rgba(255,255,255,.12); }
+.energy { height: 6px; border-radius: 3px; background: rgba(255,255,255,.1); overflow: hidden; }
+.energy i { display: block; height: 100%; width: 72%; background: linear-gradient(90deg, var(--amber), #ffe0a3); }
+.mid { display: grid; grid-template-columns: 96px 1fr; gap: 12px; align-items: center; }
+.radar { position: relative; width: 96px; height: 96px; border-radius: 50%; border: 1px solid rgba(255,181,71,.4); background: radial-gradient(circle, transparent 30%, rgba(255,181,71,.07) 31%, transparent 32%, transparent 62%, rgba(255,181,71,.07) 63%, transparent 64%); overflow: hidden; }
+.radar::before { content: ""; position: absolute; inset: 0; background: conic-gradient(from 0deg, rgba(255,181,71,.35), transparent 70deg); animation: sweep 2.4s linear infinite; }
+.radar .me { position: absolute; left: 50%; top: 50%; width: 6px; height: 6px; margin: -3px; background: var(--amber); border-radius: 50%; }
+.radar .b { position: absolute; width: 7px; height: 7px; border-radius: 50%; }
+.radar .b.s { background: var(--violet); box-shadow: 0 0 6px var(--violet); }
+.radar .b.d { background: var(--hostile); box-shadow: 0 0 6px var(--hostile); }
+@keyframes sweep { to { transform: rotate(360deg); } }
+.legend { display: grid; gap: 6px; font-size: 0.72rem; color: var(--muted); }
+.legend span::before { content: ""; display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: 7px; vertical-align: 1px; background: currentColor; }
+.legend .s { color: var(--violet); } .legend .d { color: var(--hostile); }
+.pokes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.pokes span { text-align: center; font-size: 0.72rem; color: var(--fg); border: 1px solid rgba(255,255,255,.16); border-radius: 7px; padding: 9px 4px; }
+.mini { position: absolute; left: 50%; bottom: 150px; transform: translateX(-50%); display: flex; gap: 4px; padding: 6px 8px; border-radius: 999px; background: rgba(14,20,24,.82); border: 1px solid rgba(255,181,71,.4); opacity: 0; transition: opacity .18s ease; }
+.mini i { width: 8px; height: 8px; border-radius: 50%; background: var(--amber); display: block; }
+.mini i.off { background: rgba(255,255,255,.15); }
+.wrist-view[data-pose="down"] .panel { opacity: 0; transform: translateX(-50%) perspective(700px) rotateX(60deg) translateY(40px); }
+.wrist-view[data-pose="down"] .mini { opacity: 1; }
+.pose { display: inline-flex; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.pose button { font: 500 0.82rem/1 var(--body); color: var(--muted); background: transparent; border: 0; padding: 10px 14px; cursor: pointer; }
+.pose button[aria-pressed="true"] { background: var(--raise); color: var(--fg); }
+.rules { display: grid; gap: 12px; }
+.rules li { color: var(--fg); }
+.rules li span { color: var(--muted); }
+ol.steps, ul.plain { margin: 0; padding-left: 20px; display: grid; gap: 10px; max-width: 72ch; }
+ol.steps li::marker { font-family: var(--mono); color: var(--amber); }
+.two { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 28px; }
+.foot { color: var(--muted); font-size: 0.85rem; padding-top: 60px; }
+@media (prefers-reduced-motion: reduce) { .radar::before { animation: none; } .panel, .mini { transition: none; } }
+</style>
+
+<div class="wrap">
+  <header class="hero">
+    <div class="head">
+      <span class="eyebrow">vr-game-hunter · арт-борд · 15.10.2026</span>
+      <h1>Как будет выглядеть «Охотник»</h1>
+      <p class="lede">Сверху живая заготовка: комната вместо passthrough, тварь-тень, разлом в стене, дрон и бластер в руке. Здесь нет ни одной скачанной модели, всё нарисовано кодом. Кликай по тварям, чтобы стрелять. Переключатели снимают по одному приёму, и сразу видно, что каждый из них даёт картинке.</p>
+    </div>
+    <div id="stage">
+      <canvas id="scene" aria-label="Живая сцена: комната, тень-тварь, разлом в стене, дрон и бластер. Клик стреляет."></canvas>
+      <div class="hud">
+        <div class="toggles" role="group" aria-label="Приёмы картинки">
+          <button type="button" data-toggle="shadows" aria-pressed="true">тени</button>
+          <button type="button" data-toggle="occlusion" aria-pressed="true">окклюзия</button>
+          <button type="button" data-toggle="glow" aria-pressed="true">свечение</button>
+          <button type="button" data-toggle="sound" aria-pressed="false">звук</button>
+        </div>
+        <div class="score">очки <b id="score">0</b></div>
+      </div>
+      <span class="tag-pt">комната имитирует passthrough</span>
+    </div>
+    <div class="factors">
+      <div class="factor code"><h3>Тени</h3><p>Без тени объект висит наклейкой. В шлеме пол невидим, но тень на нём рисуется, и тварь «стоит» в твоей комнате.</p></div>
+      <div class="factor code"><h3>Окклюзия</h3><p>Тень ныряет за спинку дивана и пропадает за ней. В шлеме диван берётся из сетки комнаты Quest 3. Выключи переключатель, и тварь полезет поверх дивана: вот так выглядит дешёвое MR.</p></div>
+      <div class="factor code"><h3>Свечение</h3><p>Светящиеся края разлома, кольцо дрона и полоса на бластере лучше всего читаются поверх реальной комнаты. Без них сцена плоская.</p></div>
+      <div class="factor code"><h3>Растворение</h3><p>Попадание по тени запускает шейдер распада. Анимация смерти не нужна, и это закрывает главную слабость бесплатных моделей с одной анимацией.</p></div>
+    </div>
+  </header>
+
+  <section id="styles">
+    <div class="head">
+      <span class="eyebrow">шаг 1 · выбери стиль</span>
+      <h2>Три стиля и что каждый значит для игры</h2>
+      <p class="lede">Стиль решает больше, чем отдельные модели. Если все объекты сделаны в одной манере, игра выглядит дорого даже на простых формах. Если каждый объект хорош, но стили смешаны, она выглядит дёшево.</p>
+    </div>
+    <div class="styles">
+      <!--STYLES-->
+    </div>
+  </section>
+
+  <section id="catalog">
+    <div class="head">
+      <span class="eyebrow">шаг 2 · отметь, что нравится</span>
+      <h2>Кандидаты</h2>
+      <p class="lede">Всё найдено и сверено 15 октября 2026: модели можно скачать, лицензия разрешает коммерцию, полигоны и анимации взяты с API Sketchfab. Отмечай кнопкой «нравится», внизу соберётся список, его можно скопировать и прислать мне.</p>
+    </div>
+    <!--CARDS-->
+    <div class="picked" id="picked">
+      <p>Отмечено: <b id="pickedCount">0</b></p>
+      <button class="primary" type="button" id="copyBtn" disabled>Скопировать выбор</button>
+      <textarea id="copyOut" hidden readonly aria-label="Список выбранного для копирования"></textarea>
+    </div>
+  </section>
+
+  <section id="wrist">
+    <div class="head">
+      <span class="eyebrow">интерфейс</span>
+      <h2>Панель на левом запястье</h2>
+    </div>
+    <div class="wrist">
+      <div class="wrist-view" id="wristView" data-pose="up">
+        <div class="panel" aria-label="Пример панели на запястье">
+          <div class="row"><span>ВОЛНА <b>3 / 10</b></span><span>до прорыва <b>00:42</b></span></div>
+          <div class="row"><span>броня</span><div class="hp"><i></i><i></i><i></i><i></i><i class="off"></i></div></div>
+          <div class="row"><span>заряд бластера</span><b>72%</b></div>
+          <div class="energy"><i></i></div>
+          <div class="mid">
+            <div class="radar"><span class="me"></span><span class="b s" style="left:22%;top:30%"></span><span class="b s" style="left:64%;top:70%"></span><span class="b d" style="left:72%;top:22%"></span></div>
+            <div class="legend"><span class="s">тень за мебелью</span><span class="d">дрон в воздухе</span><span>гранаты: <b style="color:var(--fg)">2</b></span></div>
+          </div>
+          <div class="pokes"><span>Арсенал</span><span>Комната</span><span>Пауза</span></div>
+        </div>
+        <div class="mini" aria-hidden="true"><i></i><i></i><i></i><i></i><i class="off"></i></div>
+        <svg class="ctrl" viewBox="0 0 150 170" aria-hidden="true">
+          <defs><linearGradient id="cg" x1="0" x2="1"><stop offset="0" stop-color="#2e3238"/><stop offset="1" stop-color="#4a5058"/></linearGradient></defs>
+          <path d="M40 160 C30 120 34 92 52 70 L98 70 C116 92 120 120 110 160 Z" fill="#c9b8a6" opacity=".55"/>
+          <rect x="44" y="20" width="62" height="78" rx="26" fill="url(#cg)"/>
+          <circle cx="62" cy="48" r="9" fill="#1c1f24"/><circle cx="86" cy="60" r="6" fill="#1c1f24"/><circle cx="84" cy="38" r="5" fill="#1c1f24"/>
+          <rect x="52" y="92" width="46" height="62" rx="18" fill="#2a2e34"/>
+        </svg>
+      </div>
+      <div class="rules">
+        <div class="pose" role="group" aria-label="Положение руки">
+          <button type="button" data-pose="up" aria-pressed="true">Рука повёрнута к лицу</button>
+          <button type="button" data-pose="down" aria-pressed="false">Рука опущена</button>
+        </div>
+        <ul class="plain">
+          <li>Поворачиваешь левую руку тыльной стороной к лицу, и панель раскрывается над контроллером. Порог примерно 50°, задержка около 0,12 секунды, чтобы панель не мигала в бою от случайного движения.</li>
+          <li>Рука опущена: на запястье остаётся тонкая полоска брони. Пять точек видно краем глаза, смотреть на руку не нужно.</li>
+          <li>Кнопки нажимаешь кончиком правого контроллера, как пальцем. Лучей нет. Каждое касание отвечает щелчком и коротким толчком вибрации.</li>
+          <li>Панель не ставит игру на паузу. Пауза — отдельная кнопка, и её нужно держать полсекунды.</li>
+          <li>Радар показывает то, чего не видно глазами: тени за мебелью фиолетовым, дроны красным. Это мостик к механике охоты со сканером.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="rules">
+    <div class="head">
+      <span class="eyebrow">как отбирал</span>
+      <h2>Правила отбора</h2>
+    </div>
+    <div class="two">
+      <ul class="plain">
+        <li><b>Франшизы не берём.</b> На Sketchfab много бластеров из Star Wars и Halo и тварей из Counter-Strike с пометкой CC-BY. Автор такой модели не владеет дизайном, поэтому все они вычеркнуты.</li>
+        <li><b>Пометку NC (только некоммерческое) не берём,</b> чтобы игру потом можно было продавать.</li>
+        <li><b>CC-BY означает титры:</b> в игре будет экран «Авторы» с именами. CC0 разрешает всё и титров не требует.</li>
+        <li><b>Полигоны.</b> Мой ориентир для браузера Quest 3: одна тварь до 30 тысяч треугольников, бластер до 30 тысяч, потому что он всегда у глаз, вся сцена в кадре до 300 тысяч. Всё тяжелее упрощаю сам.</li>
+      </ul>
+      <ul class="plain">
+        <li><b>Анимации.</b> Твари нужны минимум пять: появление, движение, атака, урон, смерть. У большинства бесплатных моделей одна. Недостающее закрываю кодом: полёт, рывки, отдача от попадания, растворение.</li>
+        <li><b>Единый стиль делается материалами.</b> Модели от разных авторов я перекрашиваю в общую палитру: тёмный металл, одинаковые цвета свечения, одна шероховатость. Разнобой исчезает.</li>
+        <li><b>Что не проверено:</b> как всё это выглядит в шлеме на твоём свету. Это проверит витрина, следующий шаг.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="next">
+    <div class="head">
+      <span class="eyebrow">дальше</span>
+      <h2>Что будет после выбора</h2>
+    </div>
+    <ol class="steps">
+      <li>Ты называешь стиль и присылаешь список отмеченного кнопкой «Скопировать выбор».</li>
+      <li>Я скачиваю выбранные модели, называю перед этим каждый файл и размер. Упрощаю, перекрашиваю в общую палитру, проверяю вес.</li>
+      <li>Собираю витрину: MR-сцену для Quest 3 с этими моделями, тенями на твоём полу, окклюзией, бластером в руке и панелью на запястье.</li>
+      <li>Ты смотришь у себя в комнате. Что выглядит плохо, меняем сразу. Когда всё нравится, стиль становится каноном, и мы садимся за сценарий.</li>
+    </ol>
+  </section>
+
+  <p class="foot">Превью моделей принадлежат их авторам и показаны для выбора. Ссылки ведут на страницы оригиналов.</p>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+<script>
+/*SCENE*/
+</script>
+<script>
+(function () {
+  // favourites
+  const KEY = 'hunter-moodboard-favs';
+  let favs = [];
+  try { favs = JSON.parse(localStorage.getItem(KEY) || '[]'); } catch (e) { favs = []; }
+  const countEl = document.getElementById('pickedCount');
+  const copyBtn = document.getElementById('copyBtn');
+  const out = document.getElementById('copyOut');
+  function sync() {
+    document.querySelectorAll('.card').forEach((c) => {
+      const on = favs.includes(c.dataset.id);
+      c.classList.toggle('fav', on);
+      const b = c.querySelector('.fav-btn'); b.setAttribute('aria-pressed', String(on)); b.textContent = on ? 'нравится ✓' : 'нравится';
+    });
+    countEl.textContent = favs.length; copyBtn.disabled = favs.length === 0;
+    try { localStorage.setItem(KEY, JSON.stringify(favs)); } catch (e) {}
+  }
+  document.querySelectorAll('.fav-btn').forEach((b) => b.addEventListener('click', () => {
+    const id = b.closest('.card').dataset.id;
+    favs = favs.includes(id) ? favs.filter((x) => x !== id) : favs.concat(id); sync();
+  }));
+  copyBtn.addEventListener('click', () => {
+    const lines = favs.map((id) => { const c = document.querySelector('.card[data-id="' + id + '"]'); return c ? '- ' + c.dataset.label + ' — ' + c.dataset.url : ''; }).filter(Boolean);
+    const text = 'Выбор для «Охотника»:\n' + lines.join('\n');
+    out.value = text; out.hidden = false;
+    const done = () => { copyBtn.textContent = 'Скопировано'; setTimeout(() => { copyBtn.textContent = 'Скопировать выбор'; }, 1600); };
+    const fallback = () => { out.focus(); out.select(); copyBtn.textContent = 'Выделено, скопируй вручную'; };
+    try { navigator.clipboard.writeText(text).then(done, fallback); } catch (e) { fallback(); }
+  });
+  sync();
+  // wrist pose
+  const view = document.getElementById('wristView');
+  document.querySelectorAll('.pose button').forEach((b) => b.addEventListener('click', () => {
+    view.dataset.pose = b.dataset.pose;
+    document.querySelectorAll('.pose button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+  }));
+})();
+</script>

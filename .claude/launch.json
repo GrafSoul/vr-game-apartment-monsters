@@ -1,0 +1,19 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "hunter-dev",
+      "runtimeExecutable": "/Users/grafsoul/.nvm/versions/node/v24.11.1/bin/npm",
+      "runtimeArgs": ["run", "dev"],
+      "port": 5173,
+      "url": "https://localhost:5173"
+    },
+    {
+      "name": "hunter-local",
+      "runtimeExecutable": "/Users/grafsoul/.nvm/versions/node/v24.11.1/bin/npm",
+      "runtimeArgs": ["run", "dev:local"],
+      "port": 5174,
+      "url": "http://localhost:5174"
+    }
+  ]
+}
