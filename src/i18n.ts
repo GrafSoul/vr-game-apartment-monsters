@@ -27,14 +27,14 @@ export function setLang(lang: Lang): void {
 
 const ru = {
   title: ['Квартирные', 'монстры'],
-  eyebrow: 'контакт · твоя комната · Quest 3',
+  eyebrow: 'MR-шутер для Meta Quest 3',
   protocol: [
-    'Разломы открываются по три. Тварь лезет только из одного — слушай, откуда трещит.',
-    'Задрожала — значит, сейчас бросится. Стреляй первым, укус снимает броню.',
-    'Каждый третий уровень стена не выдерживает. Оттуда выходит он.',
+    'В стенах твоей комнаты открываются разломы. Монстр вылезет только из одного — по треску слышно, из какого.',
+    'Перед броском монстр замирает и дрожит. Успей выстрелить: каждый укус отнимает броню.',
+    'На каждом третьем уровне из стены выходит босс.',
   ],
   enter: 'Войти в комнату',
-  controls: 'Правая рука — пистолет, курок стреляет. Левое предплечье — наручная панель: посмотри на неё, и в руке появится указка.',
+  controls: 'Пистолет в правой руке, стреляет курок. Панель на левом предплечье: посмотри на неё, и пистолет сменится указкой.',
   credits: 'Авторы моделей',
   sessionFailed: 'Не получилось запустить игру в смешанной реальности. Обнови страницу и попробуй ещё раз.',
   noXr: 'Это устройство не поддерживает смешанную реальность. Открой страницу в браузере шлема Meta Quest 3.',
@@ -64,14 +64,14 @@ const ru = {
 
 const en: typeof ru = {
   title: ['Apartment', 'monsters'],
-  eyebrow: 'contact · your room · Quest 3',
+  eyebrow: 'Mixed-reality shooter for Meta Quest 3',
   protocol: [
-    'Rifts open three at a time. Only one lets a creature through — listen for the crack.',
-    'If it shudders, it is about to lunge. Shoot first: a bite costs armor.',
-    'Every third level the wall gives way. Something big walks out.',
+    'Rifts open in the walls of your room. Only one lets a monster through — the crack tells you which.',
+    'Before it lunges, a monster freezes and shudders. Shoot first: every bite costs armor.',
+    'Every third level, a boss walks out of the wall.',
   ],
   enter: 'Enter the room',
-  controls: 'Right hand: the blaster, trigger fires. Left forearm: the wrist panel — look at it and your hand becomes a pointer.',
+  controls: 'Blaster in your right hand, trigger to fire. Panel on your left forearm: look at it and the blaster turns into a pointer.',
   credits: 'Model credits',
   sessionFailed: 'Could not start the mixed-reality session. Reload the page and try again.',
   noXr: 'This device does not support mixed reality. Open this page in the Meta Quest 3 browser.',

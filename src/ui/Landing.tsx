@@ -48,7 +48,7 @@ export function Landing({ onEnter, error }: LandingProps) {
           <span className="title__dot" aria-hidden="true" /> {s.eyebrow}
         </p>
         <h1 className="title__name">
-          <span className="title__word">{s.title[0]}</span>
+          <span className="title__word">{s.title[0]}</span>{' '}
           <span className="title__word title__word--second">{s.title[1]}</span>
           <svg className="title__crack" viewBox="0 0 600 140" preserveAspectRatio="none" aria-hidden="true">
             <path d="M0 78 L70 70 L104 86 L150 61 L196 77 L240 55 L268 79 L318 64 L352 92 L404 66 L446 80 L492 57 L540 74 L600 66" />
@@ -57,7 +57,9 @@ export function Landing({ onEnter, error }: LandingProps) {
         <ol className="title__protocol">
           {s.protocol.map((text, i) => (
             <li key={i}>
-              <span className="title__n">{String(i + 1).padStart(2, '0')}</span>
+              <span className="title__n" aria-hidden="true">
+                {String(i + 1).padStart(2, '0')}
+              </span>{' '}
               <span>{text}</span>
             </li>
           ))}
