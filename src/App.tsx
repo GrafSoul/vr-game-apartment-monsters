@@ -12,7 +12,6 @@ import { Creatures } from './scene/Creatures';
 import { Lighting } from './scene/Lighting';
 import { Rifts } from './scene/Rifts';
 import { Room } from './scene/Room';
-import { t } from './i18n';
 import { settings } from './state/settings';
 import { Landing } from './ui/Landing';
 import { TitleScene } from './ui/TitleScene';
@@ -59,19 +58,33 @@ function FpsMeter() {
   return null;
 }
 
+/** Why entering MR failed, as a key into the strings so the message follows the language switch. */
+export type SessionError = 'noXr' | 'xrDenied' | 'sessionFailed';
+
+function sessionErrorOf(e: unknown): SessionError {
+  const name = e instanceof DOMException || e instanceof Error ? e.name : '';
+  if (name === 'NotSupportedError') return 'noXr';
+  if (name === 'NotAllowedError' || name === 'SecurityError') return 'xrDenied';
+  return 'sessionFailed';
+}
+
 /** Landing screen on the headset or desktop, then the game in MR. */
 export function App() {
   const [inSession, setInSession] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<SessionError | null>(null);
 
   useEffect(() => xrStore.subscribe((s) => setInSession(s.session != null)), []);
 
-  const enter = () => {
+  const enter = async () => {
     unlockAudio();
     setError(null);
-    xrStore.enterAR().catch((e: unknown) => {
-      setError(e instanceof Error ? e.message : t().sessionFailed);
-    });
+    // Ask first, so a desktop or phone gets a plain answer instead of the browser's raw exception.
+    const supported = await navigator.xr?.isSessionSupported('immersive-ar').catch(() => false);
+    if (!supported) {
+      setError('noXr');
+      return;
+    }
+    xrStore.enterAR().catch((e: unknown) => setError(sessionErrorOf(e)));
   };
 
   return (

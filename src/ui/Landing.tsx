@@ -1,11 +1,12 @@
 import { useEffect } from 'react';
 import { setLang, useStrings, type Lang } from '../i18n';
+import type { SessionError } from '../App';
 import { settings } from '../state/settings';
 
 /** Props for the title overlay. */
 interface LandingProps {
   onEnter: () => void;
-  error: string | null;
+  error: SessionError | null;
 }
 
 const LANGS: Array<{ id: Lang; label: string; name: string }> = [
@@ -64,7 +65,11 @@ export function Landing({ onEnter, error }: LandingProps) {
         <button type="button" className="title__enter" onClick={onEnter}>
           <span>{s.enter}</span>
         </button>
-        {error && <p className="title__error">{error}</p>}
+        {error && (
+          <p className="title__error" role="alert">
+            {s[error]}
+          </p>
+        )}
         <p className="title__controls">{s.controls}</p>
         <details className="title__credits">
           <summary>{s.credits} · CC BY 4.0</summary>
